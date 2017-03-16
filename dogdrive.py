@@ -1,7 +1,9 @@
 # Configure the module according to your needs
+import sys
 import time
 import json
 from datadog import initialize
+from molotov.slave import main as moloslave
 
 
 with open('options.json') as f:
@@ -36,7 +38,17 @@ def stop(test_name):
 start_event = start("My test")
 try:
     # run the molotov test against the stack
-    time.sleep(10)
+    args = ['moloslave', 'https://github.com/tarekziade/kinto-loadtests',
+            'test']
+
+    old = list(sys.argv)
+    sys.argv = args
+    try:
+        moloslave()
+    except SystemExit:
+        pass
+    finally:
+        sys.argv = old
 finally:
     stop_event = stop("My Test")
 
@@ -44,7 +56,7 @@ start = start_event['event']['date_happened']
 end = stop_event['event']['date_happened']
 
 
-_200 = 'aws.elb.httpcode_backend_2xx{app:kintowe,env:stage}.as_count()'
+_200 = 'aws.elb.httpcode_backend_2xx{app:kintowe,env:stage}'
 
 
 
