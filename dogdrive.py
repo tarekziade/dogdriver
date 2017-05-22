@@ -38,7 +38,7 @@ start_event = start("My test")
 try:
     # run the molotov test against the stack
     args = ['moloslave', 'https://github.com/tarekziade/kinto-loadtests',
-            'heavy']
+            'dogdriver']
 
     old = list(sys.argv)
     sys.argv = args
@@ -68,12 +68,15 @@ print('zZZzZzz')
 time.sleep(60*5)
 
 # now we want to grab metrics on that time window
-res = api.Metric.query(start=start, end=end, query=_CPU)
-print(res)
+results = {}
 
-res = api.Metric.query(start=start, end=end, query=_REQ)
-print(res)
+results['CPU'] = api.Metric.query(start=start, end=end, query=_CPU)
+results['RPS'] = api.Metric.query(start=start, end=end, query=_REQ)
+results['200'] = api.Metric.query(start=start, end=end, query=_200)
 
-res = api.Metric.query(start=start, end=end, query=_200)
-print(res)
+filename = 'dogdrive-%s' % str(start)
 
+with open(filenam, 'w') as f:
+    f.write(json.dumps(results))
+
+print('%s created.' % filename)
