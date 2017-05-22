@@ -38,7 +38,7 @@ start_event = start("My test")
 try:
     # run the molotov test against the stack
     args = ['moloslave', 'https://github.com/tarekziade/kinto-loadtests',
-            'test']
+            'heavy']
 
     old = list(sys.argv)
     sys.argv = args
@@ -56,10 +56,24 @@ end = stop_event['event']['date_happened']
 
 
 _200 = 'aws.elb.httpcode_backend_2xx{app:kintowe,env:stage}'
+_REQ = 'sum:aws.elb.request_count{app:kintowe,env:stage}.as_count()'
+_CPU = """\
+max:system.cpu.user{app:kintowe,env:stage,type:web} by {host} +
+max:system.cpu.system{app:kintowe,env:stage,type:web} by {host} +
+max:system.cpu.stolen{app:kintowe,env:stage,type:web} by {host}"""
 
 
+# lets wait 5 minutes
+print('zZZzZzz')
+time.sleep(60*5)
 
 # now we want to grab metrics on that time window
-print(api.Metric.query(start=start, end=end, query=_200))
+res = api.Metric.query(start=start, end=end, query=_CPU)
+print(res)
 
+res = api.Metric.query(start=start, end=end, query=_REQ)
+print(res)
+
+res = api.Metric.query(start=start, end=end, query=_200)
+print(res)
 
