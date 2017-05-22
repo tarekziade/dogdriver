@@ -1,16 +1,15 @@
 # Configure the module according to your needs
 import sys
+import os
 import time
-import json
 from datadog import initialize
 from molotov.slave import main as moloslave
 
 
-with open('options.json') as f:
-    options = json.loads(f.read())
+APP_KEY = os.environ['DOG_APP_KEY']
+API_KEY = os.environ['DOG_API_KEY']
 
-
-initialize(**options)
+initialize(app_key=APP_KEY, api_key=API_KEY)
 
 # Use Datadog REST API client
 from datadog import api
