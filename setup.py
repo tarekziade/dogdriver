@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-install_requires = ['molotov', 'bottle']
+install_requires = ['molotov', 'bottle', 'requests']
 description = ''
 
 for file_ in ('README', 'CHANGELOG'):
