@@ -7,23 +7,22 @@ from dogdriver.util import api
 
 
 HERE = os.path.dirname(__file__)
-title = "Molotov"
-text = "We're doing a Molotov test on kintowe"
-_tags = ['version:1', 'app:kintowe']
 
 
-def _start(test_name):
-    tags = list(_tags)
+def _start(project):
+    text = "Dogdriver starts against %s" % project
+    tags = []
     tags.append('step:start')
-    tags.append('test:%s' % test_name)
-    return api.Event.create(title=title, text=text, tags=tags)
+    tags.append('project:%s' % project)
+    return api.Event.create(title="Dogdriver", text=text, tags=tags)
 
 
-def _stop(test_name):
-    tags = list(_tags)
+def _stop(project):
+    text = "Dogdriver ended against %s" % project
+    tags = []
     tags.append('step:stop')
-    tags.append('test:%s' % test_name)
-    return api.Event.create(title='Molotov-Stop', text=text, tags=tags)
+    tags.append('project:%s' % project)
+    return api.Event.create(title='Dogdriver', text=text, tags=tags)
 
 
 def get_test_url(project_name):
@@ -37,14 +36,13 @@ def get_test_url(project_name):
     raise KeyError(project_name)
 
 
-# XXX add argparse and use ServiceBook
 def run_test(project="kintowe", metadata={'tag': '1.0'}):
+    # grab the test url
     test_url = get_test_url(project)
     print('Running %s' % test_url)
-    # the test
     start_event = _start(project)
     try:
-        # run the molotov test against the stack
+        # run the molotov test
         args = ['moloslave', test_url, 'dogdriver']
         old = list(sys.argv)
         sys.argv = args
@@ -57,9 +55,10 @@ def run_test(project="kintowe", metadata={'tag': '1.0'}):
     finally:
         stop_event = _stop(project)
 
-    start = start_event['event']['date_happened']
-    end = stop_event['event']['date_happened']
-    return start, end
+    data = {}
+    data['start'] = start_event['event']['date_happened']
+    data['end'] = stop_event['event']['date_happened']
+    data['project'] = project
 
-
-
+    # send the data to the Dogdriver server
+    requests.post('http://localhost:8080/test', json=data)

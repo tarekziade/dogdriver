@@ -1,6 +1,9 @@
-from bottle import route, run, template, post
+from uuid import uuid4
+from bottle import route, run, template, post, request
 import os
 import json
+import time
+
 from dogdriver.util import api
 
 
@@ -19,13 +22,24 @@ class MetricsBuilder(object):
     def __init__(self, root=HERE):
         self.root = root
 
-    def create(self, start, end):
-        # now we want to grab metrics on that time window
+    def async_create(self, **data):
+        data['now'] = int(time.time())
+        project = data['project']
+        filename = 'job-%s.json' % (str(uuid4()))
+        filename = os.path.join(self.root, filename)
+        with open(filename, 'w') as f:
+            f.write(json.dumps(data))
+        return filename
+
+    def create(self, **data):
+        start = data['start']
+        end = data['end']
+        project = data['project']
         results = {}
         results['CPU'] = api.Metric.query(start=start, end=end, query=_CPU)
         results['RPS'] = api.Metric.query(start=start, end=end, query=_REQ)
         results['200'] = api.Metric.query(start=start, end=end, query=_200)
-        filename = 'dogdrive-%s.json' % str(start)
+        filename = '%s-%s.json' % (project, str(start))
         filename = os.path.join(self.root, filename)
         with open(filename, 'w') as f:
             f.write(json.dumps(results))
@@ -39,10 +53,8 @@ def index():
 
 @post('/test')
 def post_test():
-    import pdb; pdb.set_trace()
-    # XXX store the test name, start end end dates.
-    return {}
-
+    ok = MetricsBuilder().async_create(**request.json)
+    return {'result': ok}
 
 
 def main():
