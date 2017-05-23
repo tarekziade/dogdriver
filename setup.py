@@ -30,4 +30,5 @@ setup(name='dogdriver',
       [console_scripts]
       dogdriver = dogdriver.main:main
       dogserver = dogdriver.server:main
+      dogworker = dogdriver.worker:main
       """)
