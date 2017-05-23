@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-install_requires = ['molotov']
+install_requires = ['molotov', 'bottle']
 description = ''
 
 for file_ in ('README', 'CHANGELOG'):
@@ -29,4 +29,5 @@ setup(name='dogdriver',
       entry_points="""
       [console_scripts]
       dogdriver = dogdriver.main:main
+      dogserver = dogdriver.server:main
       """)

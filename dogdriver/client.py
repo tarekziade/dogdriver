@@ -1,18 +1,10 @@
 import sys
 import os
-from datadog import initialize
 from molotov.slave import main as moloslave
+from dogdriver.util import api
 
 
 HERE = os.path.dirname(__file__)
-APP_KEY = os.environ['DOG_APP_KEY']
-API_KEY = os.environ['DOG_API_KEY']
-
-initialize(app_key=APP_KEY, api_key=API_KEY)
-
-# Use Datadog REST API client
-from datadog import api
-
 title = "Molotov"
 text = "We're doing a Molotov test on kintowe"
 _tags = ['version:1', 'app:kintowe']
@@ -32,6 +24,7 @@ def _stop(test_name):
     return api.Event.create(title='Molotov-Stop', text=text, tags=tags)
 
 
+# XXX add argparse and use ServiceBook
 def run_test(name="My Test"):
     # the test
     start_event = _start(name)

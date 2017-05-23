@@ -1,2 +1,3 @@
 datadog
+bottle
 -e git+https://github.com/loads/molotov.git#egg=molotov
