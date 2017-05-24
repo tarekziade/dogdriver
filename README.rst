@@ -7,7 +7,7 @@ question : is this service getting slower or faster over time.
 
 The Dogdriver is composed of two parts:
 
-- a client that performs a smoe test using Molotov
+- a client that performs a smoke test using Molotov
 - a server that collects metrics from datadog and displays them
 
 Client

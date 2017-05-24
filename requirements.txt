@@ -1,4 +1,5 @@
 datadog
 bottle
 requests
+mako
 -e git+https://github.com/loads/molotov.git#egg=molotov
