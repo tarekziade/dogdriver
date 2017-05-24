@@ -3,22 +3,16 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Sticky footer</title>
+        <title>Dogdriver ~ Performance tracking</title>
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
         <!-- Place favicon.ico and apple-touch-icon(s) here  -->
-
-        <link rel="shortcut icon" href="//cdn.ink.sapo.pt/3.1.10/img/favicon.ico">
-        <link rel="apple-touch-icon" href="//cdn.ink.sapo.pt/3.1.10/img/touch-icon-iphone.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="//cdn.ink.sapo.pt/3.1.10/img/touch-icon-ipad.png"> 
-        <link rel="apple-touch-icon" sizes="120x120" href="//cdn.ink.sapo.pt/3.1.10/img/touch-icon-iphone-retina.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="//cdn.ink.sapo.pt/3.1.10/img/touch-icon-ipad-retina.png">
-        <link rel="apple-touch-startup-image" href="//cdn.ink.sapo.pt/3.1.10/img/splash.320x460.png" media="screen and (min-device-width: 200px) and (max-device-width: 320px) and (orientation:portrait)">
-        <link rel="apple-touch-startup-image" href="//cdn.ink.sapo.pt/3.1.10/img/splash.768x1004.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
-        <link rel="apple-touch-startup-image" href="//cdn.ink.sapo.pt/3.1.10/img/splash.1024x748.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+        <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="//www.mozilla.org/media/img/favicon/apple-touch-icon-180x180.8772ec154918.png">
+        <link rel="icon" type="image/png" sizes="196x196" href="//www.mozilla.org/media/img/favicon/favicon-196x196.c80e6abe0767.png">
+        <link rel="shortcut icon" href="//www.mozilla.org/media/img/favicon.d4f1f46b91f4.ico">
 
         <!-- load Ink's css from the cdn -->
         <link rel="stylesheet" type="text/css" href="//cdn.ink.sapo.pt/3.1.10/css/ink-flex.min.css">
@@ -60,7 +54,7 @@ body {
     <body>
       <div class="ink-grid">
             <header class="vertical-space">
-                <h1>DogDriver<small>performance tracking</small></h1>
+                <h1>moz://a dogdriver<small>performance tracking</small></h1>
                 <nav class="ink-navigation">
                     <ul class="menu horizontal black">
                         <li class="active"><a href="#">kintowe</a></li>
