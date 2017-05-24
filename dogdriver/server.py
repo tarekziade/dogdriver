@@ -1,5 +1,5 @@
 from uuid import uuid4
-from bottle import route, run, post, request
+from bottle import route, run, post, request, get
 import bottle
 from bottle import mako_view as view
 
@@ -17,6 +17,15 @@ bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
 def index():
     return {}
 
+
+@get('/runs/<project>/<metric>')
+def get_runs(project, metric):
+    return {'data': [
+        {'label': '1.0', 'value': 2},
+        {'label': '1.1', 'value': 3},
+        {'label': '1.2', 'value': 6},
+        {'label': '1.3', 'value': 5},
+    ]}
 
 
 @post('/test')
