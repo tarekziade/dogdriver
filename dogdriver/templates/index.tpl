@@ -6,23 +6,29 @@ src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
 
 <div class="column-group gutters">
   <div class="all-33 small-100 tiny-100">
-    <h3>CPU Load</h3>
+    <h3>CPU Load (%)</h3>
     <canvas id="CPU"></canvas>
     <p class="quarter-top-space">Some comment about CPU</p>
   </div>
   <div class="all-33 small-100 tiny-100">
-    <h3>Requests Per Minute</h3>
-    <canvas id="RPM"></canvas>
-    <p class="quarter-top-space">Some comment about RPM</p>
+    <h3>Requests Per Second</h3>
+    <canvas id="RPS"></canvas>
+    <p class="quarter-top-space">Some comment about RPS</p>
   </div>
   <div class="all-33 small-100 tiny-100">
-    <h3>Average Response Time</h3>
+    <h3>Backend Latency (ms)</h3>
     <canvas id="RT"></canvas>
     <p class="quarter-top-space">Some comment about Response Time</p>
   </div>
 </div>
 
 <script>
+
+Date.prototype.format = function() {
+  var hour = this.getHours() + ':' + this.getMinutes();
+  var date = (this.getMonth() + 1) + "/" +  this.getDate();
+  return hour + ' ' + date;
+}
 
 function drawChart(project, metric, target) {
 var jsonData = $.ajax({
@@ -56,9 +62,8 @@ var chart = {
         }]
 };
 
-
     results["data"].forEach(function(run) {
-      labels.push(run.label);
+      labels.push(new Date(run.label*1000).format());
       data.push(run.value);
     });
 
@@ -73,7 +78,7 @@ var chart = {
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero:true
+                    beginAtZero: true
                 }
             }]
         }
@@ -84,7 +89,7 @@ var chart = {
 
 
 drawChart('kintowe', 'cpu', 'CPU');
-drawChart('kintowe', 'rpm', 'RPM');
+drawChart('kintowe', 'rps', 'RPS');
 drawChart('kintowe', 'art', 'RT');
 </script>
 

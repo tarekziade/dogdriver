@@ -41,6 +41,7 @@ class Worker(object):
         print('Metrics produced at %s' % produced)
         os.remove(fullpath)
 
+
 def main():
     worker = Worker()
     worker.run()

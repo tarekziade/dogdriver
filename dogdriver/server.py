@@ -1,11 +1,9 @@
-from uuid import uuid4
+import os
+import json
+
 from bottle import route, run, post, request, get
 import bottle
 from bottle import mako_view as view
-
-import os
-import json
-import time
 from dogdriver.util import MetricsBuilder
 
 HERE = os.path.dirname(__file__)
@@ -20,12 +18,21 @@ def index():
 
 @get('/runs/<project>/<metric>')
 def get_runs(project, metric):
-    return {'data': [
-        {'label': '1.0', 'value': 2},
-        {'label': '1.1', 'value': 3},
-        {'label': '1.2', 'value': 6},
-        {'label': '1.3', 'value': 5},
-    ]}
+    chart = []
+
+    for filename in os.listdir(HERE):
+        if not filename.startswith(project + '-'):
+            continue
+        stamp = filename.split('-')[1].split('.')[0]
+        fullpath = os.path.join(HERE, filename)
+        with open(fullpath) as f:
+            data = json.loads(f.read())
+
+        metric = metric.upper()   # XXX
+        chart.append({'value': data.get(metric, 0), 'label': stamp})
+
+    print(chart)
+    return {'data': chart}
 
 
 @post('/test')

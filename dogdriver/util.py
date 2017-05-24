@@ -1,6 +1,9 @@
+import time
 import json
 import os
 from datadog import initialize, api
+from uuid import uuid4
+
 
 HERE = os.path.dirname(__file__)
 _INIT = False
@@ -17,7 +20,7 @@ def init_api():
 
 init_api()
 
-_200 = 'aws.elb.httpcode_backend_2xx{app:kintowe,env:stage}'
+_LATENCY = 'avg:aws.elb.latency{app:kintowe,env:stage}'
 _REQ = 'sum:aws.elb.request_count{app:kintowe,env:stage}.as_count()'
 _CPU = """\
 max:system.cpu.user{app:kintowe,env:stage,type:web} by {host} +
@@ -43,9 +46,14 @@ class MetricsBuilder(object):
         end = data['end']
         project = data['project']
         results = {}
-        results['CPU'] = api.Metric.query(start=start, end=end, query=_CPU)
-        results['RPS'] = api.Metric.query(start=start, end=end, query=_REQ)
-        results['200'] = api.Metric.query(start=start, end=end, query=_200)
+        cpu = api.Metric.query(start=start, end=end, query=_CPU)
+        max_cpu = max([val for _, val in cpu['series'][0]['pointlist']])
+        results['CPU'] = max_cpu
+        rps = api.Metric.query(start=start, end=end, query=_REQ)
+        max_rps = max([val for _, val in rps['series'][0]['pointlist']])
+        results['RPS'] = max_rps
+        latency = api.Metric.query(start=start, end=end, query=_LATENCY)
+        results['ART'] = max([(val*1000) for _, val in latency['series'][0]['pointlist']])
         filename = '%s-%s.json' % (project, str(start))
         filename = os.path.join(self.root, filename)
         with open(filename, 'w') as f:
