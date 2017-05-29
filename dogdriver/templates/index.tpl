@@ -30,6 +30,40 @@ Date.prototype.format = function() {
   return hour + ' ' + date;
 }
 
+Chart.defaults.derivedlinee = Chart.defaults.line;
+
+var custom = Chart.controllers.line.extend({
+    draw: function (ease) {
+        Chart.controllers.line.prototype.draw.call(this, ease);
+
+        var meta = this.getMeta();
+        var point = meta.data[5];
+        var scale = this.chart.scales['x-axis'];
+        // draw line
+        var ctx = this.chart.chart.ctx;
+
+        // draw line
+        ctx.save();
+        ctx.beginPath();
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.moveTo(point._model.x, 5);
+        ctx.lineTo(point._model.x, scale.top);
+        ctx.stroke();
+
+        // write label
+        ctx.textAlign = 'left';
+        ctx.font = "14px Georgia";
+        ctx.fillStyle = 'black'
+        ctx.fillText('1.0', point._model.x + 4, 10);
+        ctx.restore();
+    }
+});
+
+
+Chart.controllers.derivedLine = custom; 
+
+
 function drawChart(project, metric, target) {
 var jsonData = $.ajax({
     url: 'http://localhost:8080/runs/' + project + '/' + metric,
@@ -69,13 +103,14 @@ var chart = {
 
    var ctx = document.getElementById(target);
    var myChart = new Chart(ctx, {
-    type: 'line',
+    type: 'derivedLine',
     data: chart,
     options: {
         legend: {
             display: false,
         },
         scales: {
+            xAxes: [{'id': 'x-axis'}],
             yAxes: [{
                 ticks: {
                     beginAtZero: true
