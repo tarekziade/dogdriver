@@ -54,6 +54,7 @@ class MetricsBuilder(object):
         results['RPS'] = max_rps
         latency = api.Metric.query(start=start, end=end, query=_LATENCY)
         results['ART'] = max([(val*1000) for _, val in latency['series'][0]['pointlist']])
+        results['version'] = data['version']
         filename = '%s-%s.json' % (project, str(start))
         filename = os.path.join(self.root, filename)
         with open(filename, 'w') as f:

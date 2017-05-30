@@ -37,25 +37,33 @@ var custom = Chart.controllers.line.extend({
         Chart.controllers.line.prototype.draw.call(this, ease);
 
         var meta = this.getMeta();
-        var point = meta.data[5];
         var scale = this.chart.scales['x-axis'];
-        // draw line
         var ctx = this.chart.chart.ctx;
 
-        // draw line
-        ctx.save();
-        ctx.beginPath();
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 2;
-        ctx.moveTo(point._model.x, 5);
-        ctx.lineTo(point._model.x, scale.top);
-        ctx.stroke();
 
-        // write label
-        ctx.textAlign = 'left';
-        ctx.font = "14px Georgia";
-        ctx.fillStyle = 'black'
-        ctx.fillText('1.0', point._model.x + 4, 10);
+        ctx.save();
+
+        var releases = (this.chart.config.data.releases);
+
+        for (var i=0; i < releases.length; i++) {
+            var version = releases[i];
+            if (version != "") {
+                var point = meta.data[i];
+                // draw line
+                ctx.beginPath();
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 2;
+                ctx.moveTo(point._model.x, 5);
+                ctx.lineTo(point._model.x, scale.top);
+                ctx.stroke();
+
+                // write label
+                ctx.textAlign = 'left';
+                ctx.font = "14px Georgia";
+                ctx.fillStyle = 'black';
+                ctx.fillText(version, point._model.x + 4, 10);
+            }
+        }
         ctx.restore();
     }
 });
@@ -70,9 +78,10 @@ var jsonData = $.ajax({
     dataType: 'json',
   }).done(function (results) {
 
-var labels = [], data = [];
+var labels = [], data = [], releases = [];
 var chart = {
         labels: labels,
+        releases: releases,
         datasets: [{
             data: data,
             fill: false,
@@ -97,15 +106,18 @@ var chart = {
 };
 
     results["data"].forEach(function(run) {
-      labels.push(new Date(run.label*1000).format());
-      data.push(run.value);
+       labels.push(new Date(run.label*1000).format());
+       data.push(run.value);
+       releases.push(run.release);
     });
+
 
    var ctx = document.getElementById(target);
    var myChart = new Chart(ctx, {
     type: 'derivedLine',
     data: chart,
     options: {
+        backgroundColor:'rgb(10,10,10)',
         legend: {
             display: false,
         },

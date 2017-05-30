@@ -39,6 +39,12 @@ def get_test_url(project_name):
 def run_test(project="kintowe", metadata={'tag': '1.0'}):
     # grab the test url
     test_url = get_test_url(project)
+
+    # grab deployed project version
+    # XXX should be in servicbook
+    info = requests.get('https://webextensions-settings.stage.mozaws.net/v1/')
+    version = info.json()["project_version"]
+
     print('Running %s' % test_url)
     start_event = _start(project)
     try:
@@ -59,6 +65,7 @@ def run_test(project="kintowe", metadata={'tag': '1.0'}):
     data['start'] = start_event['event']['date_happened']
     data['end'] = stop_event['event']['date_happened']
     data['project'] = project
+    data['version'] = version
 
     # send the data to the Dogdriver server
     requests.post('http://localhost:8080/test', json=data)

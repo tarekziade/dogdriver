@@ -16,9 +16,12 @@ def index():
     return {}
 
 
+
 @get('/runs/<project>/<metric>')
 def get_runs(project, metric):
     chart = []
+
+    previous = None
 
     for filename in os.listdir(HERE):
         if not filename.startswith(project + '-'):
@@ -29,9 +32,15 @@ def get_runs(project, metric):
             data = json.loads(f.read())
 
         metric = metric.upper()   # XXX
-        chart.append({'value': data.get(metric, 0), 'label': stamp})
 
-    print(chart)
+        run = {'value': data.get(metric, 0), 'label': stamp}
+        version = data.get('version', '')
+        if version == previous:
+            run['release'] = ''
+        else:
+            run['release'] = previous = version
+        chart.append(run)
+
     return {'data': chart}
 
 
