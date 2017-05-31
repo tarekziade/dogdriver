@@ -1,3 +1,4 @@
+from functools import wraps
 import os
 import time
 from contextlib import contextmanager
@@ -11,6 +12,7 @@ _C = {}
 
 def cached(name, max_age=60):
     def _cached(func):
+        @wraps(func)
         def __cached(*args, **kw):
             if name in _C:
                 when, val = _C[name]
