@@ -1,14 +1,24 @@
-Dogdriver
+dogDriver
 =========
 
-This project aims at collecting performance metrics to build a
-dashboard displaying a trend. The goal is to answer this simple
-question : is this service getting slower or faster over time.
+**Is service <X> getting slower or faster with this new release?**
 
-The Dogdriver is composed of two parts:
+To answer to this question, you will need to spend some time digging
+into the metrics for different time windows and find when each release
+was made.
+
+Or you can let dogDriver collect performance metrics over time,
+and find out immediatly how it's trending.
+
+.. image:: https://github.com/tarekziade/dogdriver/blob/master/dd.png?raw=true
+
+
+dogDriver is composed of three parts:
 
 - a client that performs a smoke test using Molotov
-- a server that collects metrics from datadog and displays them
+- a worker that aggregates metrics from Datadog for each run
+- a server that displays them in a simple dashboard
+
 
 Client
 ------
@@ -21,17 +31,26 @@ When the client runs it does the following:
 - sends a stop event to datadog
 - sends the start and stop values to the Dogdriver Server
 
+Worker
+-----
+
+The worker builds metrics by doing the following:
+
+- collect runs sent by the client
+- when a run is older than 10 minutes, queries Datadog to build metrics
+- store metrics for the Server
 
 Server
 ------
 
 The server does the following:
 
-- exposes an API to receive tests runs. Each run is stored in a queue
-- when a run is older than 10 minutes, the server queries Datadog to build metrics
-- Metrics are stored as JSON files on the server, grouped by project names
-- a metrics displaying the performance trend for a specific project is updated
-- a simple JS dashboard display those all those metrics
+- exposes an API to receive tests runs. Each run is stored in a queue for the
+  worker.
+- a metrics displaying the performance trend for a specific project is
+  updated.
+- a simple JS dashboard display those all those metrics.
+
 
 Integration
 -----------
@@ -39,4 +58,5 @@ Integration
 The Dogdriver client is added to a Jenkins pipeline, so it can be
 run continuously to build a high-level performance trend per application.
 
+The metrics are stored in JSON files.
 
