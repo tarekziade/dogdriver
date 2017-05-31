@@ -1,4 +1,5 @@
 datadog
+boto3
 bottle
 requests
 mako

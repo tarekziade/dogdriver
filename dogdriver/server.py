@@ -4,7 +4,10 @@ import json
 from bottle import route, run, post, request, get
 import bottle
 from bottle import mako_view as view
+
 from dogdriver.util import MetricsBuilder
+from dogdriver.db import get_list, download_json
+
 
 HERE = os.path.dirname(__file__)
 bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
@@ -23,14 +26,9 @@ def get_runs(project, metric):
 
     previous = None
 
-    for filename in os.listdir(HERE):
-        if not filename.startswith(project + '-'):
-            continue
+    for filename in get_list(project + '-'):
+        data = download_json(filename)
         stamp = filename.split('-')[1].split('.')[0]
-        fullpath = os.path.join(HERE, filename)
-        with open(fullpath) as f:
-            data = json.loads(f.read())
-
         metric = metric.upper()   # XXX
 
         run = {'value': data.get(metric, 0), 'label': stamp}
