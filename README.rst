@@ -31,7 +31,7 @@ What we've learned so far:
   fair load but don't get overwhelmed.
 
 Overall, dogDriver should still provide a good indicator of
-whether a release has altered the preformances of an application.
+whether a release has altered the performances of a service.
 But it should only be a trigger to a deeper investigation.
 
 
@@ -80,8 +80,18 @@ The server does the following:
 Integration
 -----------
 
-The Dogdriver client is added to a Jenkins pipeline, so it can be
-run continuously to build a high-level performance trend per application.
+The Dogdriver client can run from anywhere, as long as it has
+access to the tested service and to the S3 bucket where results
+are stored.
 
-The metrics are stored in JSON files.
+The client uses the ServiceBook to find out if a project has
+a **dogdriver** test in its tests list. The test should be
+an URL pointing to a Github repo that contains a Molotov test
+along with a Molotov configuration as explained in http://molotov.readthedocs.io/en/latest/slave/
+
+dogDriver will pick up the **dogdriver** configuration and run
+Molotov using this command::
+
+    $ moloslave <github url> dogdriver
+
 
