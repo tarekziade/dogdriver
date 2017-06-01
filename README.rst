@@ -24,15 +24,15 @@ What we've learned so far:
   location all the time
 - The tests need to be run often in order to remove any
   unwanted discrepancy
-- the trend will be impacted by any architectural change on
-  the deployment, whhether they are automatic (autoscaling)
-  or manual (ops adding or removing a node)
-- the load needs to be tweaked so the infrastructure gets a
-  fair load but don't get overhelmed.
+- The trend will be impacted by any architectural change on
+  the deployment, whether they are automatic (autoscaling)
+  or manual (ops adding or removing a node.)
+- The load needs to be tweaked so the infrastructure gets a
+  fair load but don't get overwhelmed.
 
 Overall, dogDriver should still provide a good indicator of
-whether a release has altered the preformances of an application,
-but it should only be a trigger to a deeper investigation.
+whether a release has altered the preformances of an application.
+But it should only be a trigger to a deeper investigation.
 
 
 Architecture
