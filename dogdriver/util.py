@@ -1,8 +1,10 @@
 import time
 import json
 import os
-from datadog import initialize, api
 from uuid import uuid4
+
+from datadog import initialize, api
+from dogdriver.db import upload_json
 
 
 HERE = os.path.dirname(__file__)
@@ -29,35 +31,20 @@ max:system.cpu.system{app:kintowe,env:stage,type:web} by {host} +
 max:system.cpu.stolen{app:kintowe,env:stage,type:web} by {host}"""
 
 
-class MetricsBuilder(object):
-    def __init__(self, root=HERE):
-        self.root = root
-
-    def async_create(self, **data):
-        data['now'] = int(time.time())
-        project = data['project']
-        filename = 'job-%s.json' % (str(uuid4()))
-        filename = os.path.join(self.root, filename)
-        with open(filename, 'w') as f:
-            f.write(json.dumps(data))
-        return filename
-
-    def create(self, **data):
-        start = data['start']
-        end = data['end']
-        project = data['project']
-        results = {}
-        cpu = api.Metric.query(start=start, end=end, query=_CPU)
-        max_cpu = max([val for _, val in cpu['series'][0]['pointlist']])
-        results['CPU'] = max_cpu
-        rps = api.Metric.query(start=start, end=end, query=_REQ)
-        max_rps = max([val for _, val in rps['series'][0]['pointlist']])
-        results['RPS'] = max_rps
-        latency = api.Metric.query(start=start, end=end, query=_LATENCY)
-        results['ART'] = max([(val*1000) for _, val in latency['series'][0]['pointlist']])
-        results['version'] = data['version']
-        filename = '%s-%s.json' % (project, str(start))
-        filename = os.path.join(self.root, filename)
-        with open(filename, 'w') as f:
-            f.write(json.dumps(results))
-        return filename
+def create_metrics(**data):
+    start = data['start']
+    end = data['end']
+    project = data['project']
+    results = {}
+    cpu = api.Metric.query(start=start, end=end, query=_CPU)
+    max_cpu = max([val for _, val in cpu['series'][0]['pointlist']])
+    results['CPU'] = max_cpu
+    rps = api.Metric.query(start=start, end=end, query=_REQ)
+    max_rps = max([val for _, val in rps['series'][0]['pointlist']])
+    results['RPS'] = max_rps
+    latency = api.Metric.query(start=start, end=end, query=_LATENCY)
+    results['ART'] = max([(val*1000) for _, val in latency['series'][0]['pointlist']])
+    results['version'] = data['version']
+    filename = '%s-%s.json' % (project, str(start))
+    upload_json(results, filename)
+    return 's3://dogdriver/' + filename

@@ -1,12 +1,13 @@
+import time
 import sys
 import os
+from uuid import uuid4
 
 import requests
 from molotov.slave import main as moloslave
+
 from dogdriver.util import api
-
-
-HERE = os.path.dirname(__file__)
+from dogdriver.db import upload_json
 
 
 def _start(project):
@@ -66,6 +67,8 @@ def run_test(project="kintowe", metadata={'tag': '1.0'}):
     data['end'] = stop_event['event']['date_happened']
     data['project'] = project
     data['version'] = version
+    data['now'] = time.time()
 
-    # send the data to the Dogdriver server
-    requests.post('http://localhost:8080/test', json=data)
+    # send the data in the S3 bucket
+    job_name = 'job-%s.json' % str(uuid4())
+    upload_json(data, job_name)

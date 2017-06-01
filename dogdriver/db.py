@@ -42,6 +42,11 @@ def get_list(filter='', name='dogdriver'):
     return keys
 
 
+def delete_json(key, name='dogdriver'):
+    with s3bucket(name) as bucket:
+        bucket.Object(key).delete()
+
+
 def upload_json(data, key, name='dogdriver'):
     with s3bucket(name) as bucket:
         data = json.dumps(data).encode('utf8')
