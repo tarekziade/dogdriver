@@ -1,7 +1,5 @@
 import os
-import json
-
-from bottle import route, run, post, request, get
+from bottle import route, run, get
 import bottle
 from bottle import mako_view as view
 
@@ -15,7 +13,6 @@ bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
 @view('index')
 def index():
     return {}
-
 
 
 @get('/runs/<project>/<metric>')

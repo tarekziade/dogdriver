@@ -1,7 +1,4 @@
-import os
-import json
 import time
-
 from dogdriver.util import create_metrics
 from dogdriver.db import get_list, download_json, delete_json
 
