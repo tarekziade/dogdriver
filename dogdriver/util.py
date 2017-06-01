@@ -27,9 +27,12 @@ max:system.cpu.system{app:kintowe,env:stage,type:web} by {host} +
 max:system.cpu.stolen{app:kintowe,env:stage,type:web} by {host}"""
 
 
-def _max(metric, transform=lambda x: x):
+def _max(metric, transform=lambda x: x, index=0):
+    if index >= len(metric['series']):
+        return 0
+    values = metric['series'][index]
     return max([transform(val) for _, val in
-               metric['series'][0]['pointlist']])
+               values['pointlist']])
 
 
 def create_metrics(**data):
