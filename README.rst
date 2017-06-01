@@ -3,15 +3,40 @@ dogDriver
 
 **Is service <X> getting slower or faster with this new release?**
 
-To answer to this question, you will need to spend some time digging
-into the metrics for different time windows and find when each release
-was made.
+To answer to this question, you will need to spend some time
+digging into the metrics for different time windows and find when
+each release was made.
 
-Or you can let dogDriver collect performance metrics over time,
-and find out immediatly how it's trending.
+Or you can let dogDriver collect performance metrics over time, and
+find out immediatly how it's trending.
 
 .. image:: https://github.com/tarekziade/dogdriver/blob/master/dd.png?raw=true
 
+
+Limitations
+~~~~~~~~~~~
+
+dogDriver is still in experimental phase.
+
+What we've learned so far:
+
+- For consistent results, tests need to be run from the same
+  location all the time
+- The tests need to be run often in order to remove any
+  unwanted discrepancy
+- the trend will be impacted by any architectural change on
+  the deployment, whhether they are automatic (autoscaling)
+  or manual (ops adding or removing a node)
+- the load needs to be tweaked so the infrastructure gets a
+  fair load but don't get overhelmed.
+
+Overall, dogDriver should still provide a good indicator of
+whether a release has altered the preformances of an application,
+but it should only be a trigger to a deeper investigation.
+
+
+Architecture
+------------
 
 dogDriver is composed of three parts:
 
@@ -21,7 +46,7 @@ dogDriver is composed of three parts:
 
 
 Client
-------
+~~~~~~
 
 When the client runs it does the following:
 
@@ -32,7 +57,7 @@ When the client runs it does the following:
 - sends the start and stop values to the Dogdriver Server
 
 Worker
------
+~~~~~~
 
 The worker builds metrics by doing the following:
 
@@ -41,7 +66,7 @@ The worker builds metrics by doing the following:
 - store metrics for the Server
 
 Server
-------
+~~~~~~
 
 The server does the following:
 
