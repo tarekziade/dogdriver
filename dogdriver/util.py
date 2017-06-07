@@ -47,6 +47,7 @@ def create_metrics(**data):
     latency = api.Metric.query(start=start, end=end, query=_LATENCY)
     results['ART'] = _max(latency, lambda x: x * 1000)
     results['version'] = data['version']
+    results['source'] = data.get('source', 'unknown')
     filename = '%s-%s.json' % (project, str(start))
     upload_json(results, filename)
     return 's3://dogdriver/' + filename

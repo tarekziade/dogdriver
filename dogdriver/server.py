@@ -16,13 +16,15 @@ def index():
 
 
 @get('/runs/<project>/<metric>')
-def get_runs(project, metric):
+def get_runs(project, metric, bysource=None):
     chart = []
-
     previous = None
 
     for filename in get_list(project + '-'):
         data = download_json(filename)
+        if bysource is not None and data.get('source') != bysource:
+            continue
+
         stamp = filename.split('-')[1].split('.')[0]
         metric = metric.upper()   # XXX
 

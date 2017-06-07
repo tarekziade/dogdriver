@@ -36,7 +36,10 @@ def get_test_url(project_name):
     raise KeyError(project_name)
 
 
-def run_test(project="kintowe", metadata={'tag': '1.0'}):
+def run_test(args):
+    project = args.project
+    source = args.source
+
     # grab the test url
     test_url = get_test_url(project)
 
@@ -67,6 +70,7 @@ def run_test(project="kintowe", metadata={'tag': '1.0'}):
     data['project'] = project
     data['version'] = version
     data['now'] = time.time()
+    data['source'] = source
 
     # send the data in the S3 bucket
     job_name = 'job-%s.json' % str(uuid4())
