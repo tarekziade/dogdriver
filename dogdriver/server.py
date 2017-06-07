@@ -1,5 +1,5 @@
 import os
-from bottle import route, run, get
+from bottle import route, run, get, request
 import bottle
 from bottle import mako_view as view
 
@@ -16,9 +16,10 @@ def index():
 
 
 @get('/runs/<project>/<metric>')
-def get_runs(project, metric, bysource=None):
+def get_runs(project, metric):
     chart = []
     previous = None
+    bysource = request.query.get('source')
 
     for filename in get_list(project + '-'):
         data = download_json(filename)

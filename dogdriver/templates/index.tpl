@@ -69,12 +69,12 @@ var custom = Chart.controllers.line.extend({
 });
 
 
-Chart.controllers.derivedLine = custom; 
+Chart.controllers.derivedLine = custom;
 
 
 function drawChart(project, metric, target) {
 var jsonData = $.ajax({
-    url: 'http://localhost:8080/runs/' + project + '/' + metric,
+    url: 'http://localhost:8080/runs/' + project + '/' + metric + '?source=tarek',
     dataType: 'json',
   }).done(function (results) {
 
