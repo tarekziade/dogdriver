@@ -40,6 +40,9 @@ def get_runs(project, metric):
     return {'data': chart}
 
 
+application = bottle.default_app()
+
+
 def main():
     # XXX run a queue that will process the metrics
     run(host='localhost', port=8080)
