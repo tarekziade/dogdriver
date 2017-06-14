@@ -6,17 +6,17 @@ src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
 
 <div class="column-group gutters">
   <div class="all-33 small-100 tiny-100">
-    <h3>CPU Load (%)</h3>
+    <h3>CPU Load (%) <span id="cpuTrend">==</span></h3>
     <canvas id="CPU"></canvas>
     <p class="quarter-top-space">Some comment about CPU</p>
   </div>
   <div class="all-33 small-100 tiny-100">
-    <h3>Requests Per Second</h3>
+    <h3>Requests Per Second <span id="rpsTrend">==</span></h3>
     <canvas id="RPS"></canvas>
     <p class="quarter-top-space">Some comment about RPS</p>
   </div>
   <div class="all-33 small-100 tiny-100">
-    <h3>Backend Latency (ms)</h3>
+    <h3>Backend Latency (ms) <span id="artTrend">==</span></h3>
     <canvas id="RT"></canvas>
     <p class="quarter-top-space">Some comment about Response Time</p>
   </div>
@@ -111,6 +111,9 @@ var chart = {
        releases.push(run.release);
     });
 
+   console.log(results["trend"]);
+
+   $('#' + metric + 'Trend').html(results["trend"]);
 
    var ctx = document.getElementById(target);
    var myChart = new Chart(ctx, {

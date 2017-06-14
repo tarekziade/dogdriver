@@ -51,3 +51,20 @@ def create_metrics(**data):
     filename = '%s-%s.json' % (project, str(start))
     upload_json(results, filename)
     return 's3://dogdriver/' + filename
+
+
+def trend(series):
+    """Naive trend
+    """
+    first = None
+    initial = 0
+    for val in series:
+        if first is None:
+            first = val
+        else:
+            initial += val - first
+    if initial > 0:
+        return 1
+    elif initial == 0:
+        return 0
+    return -1

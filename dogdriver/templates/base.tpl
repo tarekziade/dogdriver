@@ -52,7 +52,23 @@
             footer {
                 background: #ccc;
             }
+            .trendEq {
+              font-size: 110%;
+              font-weight: bold;
+              color: red;
+            }
 
+            .trendBad {
+              font-size: 110%;
+              font-weight: bold;
+              color: red;
+            }
+
+            .trendGood {
+              font-size: 110%;
+              font-weight: bold;
+              color: green;
+            }
         </style>
     </head>
 
