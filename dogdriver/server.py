@@ -14,7 +14,19 @@ bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
 @route('/')
 @view('index')
 def index():
-    return {}
+    source = request.query.get('source', 'tarek')
+    sources = get_sources('kintowe')
+    return {'source': source, 'sources': sources}
+
+
+def get_sources(project):
+    sources = []
+    for filename in get_list(project + '-'):
+        data = download_json(filename)
+        source = data.get('source')
+        if source and source not in sources:
+            sources.append(source)
+    return sources
 
 
 @get('/runs/<project>/<metric>')

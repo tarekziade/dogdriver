@@ -82,7 +82,14 @@
                 dogDriver<small>performance tracking</small></h1>
                 <nav class="ink-navigation">
                     <ul class="menu horizontal black">
-                        <li class="active"><a href="#">kintowe</a></li>
+                        <li class="active"><a href="#">kintowe</a>
+                          <ul class="submenu">
+                           %for source in sources:
+                             <li><a href="/?source=${source}">${source}</a></li>
+                           %endfor
+
+                          </ul>
+</li>
                         <li><a href="#">absearch</a></li>
                         <li><a href="#">sync</a></li>
                     </ul>
