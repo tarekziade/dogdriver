@@ -7,18 +7,6 @@ from dogdriver.db import get_list, download_json
 from dogdriver.util import trend
 
 
-HERE = os.path.dirname(__file__)
-bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
-
-
-@route('/')
-@view('index')
-def index():
-    source = request.query.get('source', 'tarek')
-    sources = get_sources('kintowe')
-    return {'source': source, 'sources': sources}
-
-
 def get_sources(project):
     sources = []
     for filename in get_list(project + '-'):
@@ -29,7 +17,65 @@ def get_sources(project):
     return sources
 
 
+
+PROJECTS = [{'name': 'kintowe', 'sources': get_sources('kintowe')},
+            {'name': 'absearch', 'sources': get_sources('absearch')},
+            {'name': 'sync', 'sources': get_sources('sync')}]
+
+HERE = os.path.dirname(__file__)
+bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
+
+
+@route('/')
+@route('/dogdriver')
+@view('index')
+def index():
+    source = request.query.get('source', 'tarek')
+    return {'source': source, 'project': 'kintowe', 'projects': PROJECTS}
+
+
+@route('/<project>')
+@route('/dogdriver/<project>')
+@view('project')
+def project_index(project):
+    source = request.query.get('source', 'tarek')
+    return {'source': source, 'project': project, 'projects': PROJECTS}
+
+
+
+@get('/trend/<project>')
+@get('/dogdriver/trend/<project>')
+def get_trend(project):
+    # trend is only on RPS for now
+    metric = 'RPS'
+    previous = None
+    bysource = request.query.get('source')
+    values = []
+
+    for filename in get_list(project + '-'):
+        data = download_json(filename)
+        if bysource is not None and data.get('source') != bysource:
+            continue
+        metric = metric.upper()   # XXX
+        value = data.get(metric, 0)
+        values.append(value)
+
+    _trend = trend(values)
+    up = 'trendGood'
+    down = 'trendBad'
+
+    if _trend == 1:
+        _trend = '<span class="%s">⇧</span>' % up
+    elif _trend == 0:
+        _trend = '<span class="trendEq">≈</span>'
+    else:
+        _trend = '<span class="%s">⬇</span>' % down
+
+    return {'trend': _trend}
+
+
 @get('/runs/<project>/<metric>')
+@get('/dogdriver/runs/<project>/<metric>')
 def get_runs(project, metric):
     chart = []
     previous = None
