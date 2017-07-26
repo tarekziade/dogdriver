@@ -25,30 +25,45 @@ def _stop(project):
     return api.Event.create(title='Dogdriver', text=text, tags=tags)
 
 
-def get_test_url(project_name):
+def get_test_info(project, deployment):
     book = 'http://servicebook.dev.mozaws.net/api/project'
     projects = requests.get(book).json()['data']
-    for project in projects:
-        if project['name'] == project_name:
-            for test in project['tests']:
+    test_url = deployment_url = None
+
+    for item in projects:
+        if item['name'] == project:
+            for test in item['tests']:
                 if test['name'] == 'dogdriver':
-                    return test['url']
-    raise KeyError(project_name)
+                    test_url = test['url']
+            if test_url is None:
+                break
+
+            for depl in item['deployments']:
+                if depl['name'] == deployment:
+                    deployment_url = depl['endpoint']
+                    break
+
+    if test_url is None:
+        raise KeyError("No datadog test for %r" % project)
+    if deployment_url is None:
+        raise KeyError("No %r deployment for %r" % (deployment, project))
+
+    return test_url, deployment_url
 
 
 def run_test(args):
     project = args.project
     source = args.source
+    deployment = args.deployment
 
     # grab the test url
-    test_url = get_test_url(project)
+    test_url, deployment_url = get_test_info(project, deployment)
 
     # grab deployed project version
-    # XXX should be in servicbook
-    info = requests.get('https://webextensions-settings.stage.mozaws.net/v1/')
-    version = info.json()["project_version"]
-
-    print('Running %s' % test_url)
+    version_url = deployment_url.rstrip('/') + '/__version__'
+    info = requests.get(version_url)
+    version = info.json()["version"]
+    print('Running %r on %r' % (test_url, deployment))
     start_event = _start(project)
     try:
         # run the molotov test
