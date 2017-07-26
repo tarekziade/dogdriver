@@ -17,10 +17,22 @@ def get_sources(project):
     return sources
 
 
+# listing projects
+def get_project_list():
+    projects = []
+    added = []
+    for filename in get_list():
+        if '-' not in filename:
+            continue
+        project = filename.split('-')[0]
+        if project in added:
+            continue
+        added.append(project)
+        entry = {'name': project, 'sources': get_sources(project)}
+        projects.append(entry)
 
-PROJECTS = [{'name': 'kintowe', 'sources': get_sources('kintowe')},
-            {'name': 'absearch', 'sources': get_sources('absearch')},
-            {'name': 'sync', 'sources': get_sources('sync')}]
+    return projects
+
 
 HERE = os.path.dirname(__file__)
 bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
@@ -31,7 +43,8 @@ bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
 @view('index')
 def index():
     source = request.query.get('source', 'tarek')
-    return {'source': source, 'project': 'kintowe', 'projects': PROJECTS}
+    return {'source': source, 'project': 'kintowe',
+            'projects': get_project_list()}
 
 
 @route('/<project>')
@@ -39,7 +52,8 @@ def index():
 @view('project')
 def project_index(project):
     source = request.query.get('source', 'tarek')
-    return {'source': source, 'project': project, 'projects': PROJECTS}
+    return {'source': source, 'project': project,
+            'projects': get_project_list()}
 
 
 

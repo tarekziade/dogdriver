@@ -4,6 +4,7 @@ import time
 from contextlib import contextmanager
 from io import BytesIO
 import json
+import hashlib
 
 import boto3
 
@@ -14,12 +15,21 @@ def cached(name, max_age=60):
     def _cached(func):
         @wraps(func)
         def __cached(*args, **kw):
-            if name in _C:
-                when, val = _C[name]
+            hash = hashlib.md5(name.encode('utf8'))
+            for arg in args:
+                hash.update(str(arg).encode('utf8'))
+            keywords = list(kw.items())
+            keywords.sort()
+            for k, v in keywords:
+                hash.update(str(v).encode('utf8'))
+            key = hash.hexdigest()
+
+            if key in _C:
+                when, val = _C[key]
                 if time.time() - when < max_age:
                     return val
             val = func(*args, **kw)
-            _C[name] = time.time(), val
+            _C[key] = time.time(), val
             return val
         return __cached
     return _cached
