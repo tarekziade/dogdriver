@@ -9,6 +9,10 @@ def main():
                         type=str, help="Name of the source")
     parser.add_argument('-p', '--project', default='kintowe', type=str,
                         help="Name of the project")
+    parser.add_argument('-t', '--test', default='dogdriver', type=str,
+                        help="Name of the test in the Service Book")
+    parser.add_argument('-m', '--molotov-test', default='dogdriver', type=str,
+                        help="Name of the test in the Molotov config")
     parser.add_argument('-d', '--deployment', default='stage', type=str,
                         help="Name of the deployment")
 
