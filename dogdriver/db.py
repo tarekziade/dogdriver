@@ -9,6 +9,7 @@ import hashlib
 import boto3
 
 _C = {}
+JOB_PREFIX = 'job-'
 
 
 def cached(name, max_age=60):

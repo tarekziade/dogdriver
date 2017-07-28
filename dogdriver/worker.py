@@ -15,7 +15,7 @@ class Worker(object):
     def run(self):
         while True:
             print('Scanning the S3 bucket')
-            for filename in get_list('job-'):
+            for filename in get_list(JOB_PREFIX):
                 self._process_file(filename)
             print('ZzzzZ')
             time.sleep(self.sleep)

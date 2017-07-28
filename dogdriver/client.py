@@ -6,7 +6,7 @@ import requests
 from molotov.slave import main as moloslave
 
 from dogdriver.util import api
-from dogdriver.db import upload_json
+from dogdriver.db import upload_json, JOB_PREFIX
 
 
 def _start(project):
@@ -98,5 +98,5 @@ def run_test(args):
     data['source'] = source
 
     # send the data in the S3 bucket
-    job_name = 'job-%s.json' % str(uuid4())
+    job_name = '%s-%s.json' % (JOB_PREFIX, str(uuid4()))
     upload_json(data, job_name)
