@@ -5,15 +5,13 @@ from bottle import route, run, get, request
 import bottle
 from bottle import mako_view as view
 
-from dogdriver.db import get_list, download_json JOB_PREFIX
+from dogdriver.db import get_list, download_json, JOB_PREFIX
 from dogdriver.util import trend
 
 
 def get_best_source(project):
     sources = defaultdict(int)
     for filename in get_list(project + '-'):
-        if filename.startswith(JOB_PREFIX):
-            continue
         data = download_json(filename)
         source = data.get('source')
         if source is None:
@@ -40,6 +38,8 @@ def get_project_list():
     added = []
     for filename in get_list():
         if '-' not in filename:
+            continue
+        if filename.startswith(JOB_PREFIX):
             continue
         project = filename.split('-')[0]
         if project in added:
