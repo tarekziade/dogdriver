@@ -75,7 +75,7 @@
     <body>
       <div class="ink-grid">
             <header class="vertical-space">
-              <a href="/" style='text-decoration:none'><h1>
+              <a href="/dogdriver" style='text-decoration:none'><h1>
                 <%include file="logo.tpl"/>
                 dogDriver<small>performance tracking</small>
 </h1>
@@ -90,13 +90,13 @@
                       <li>
                       %endif
 
-                        <a href="/${lproject['name']}">
+                        <a href="/dogdriver/${lproject['name']}">
                                 ${lproject['name']}
                         </a>
 
                         <ul class="submenu">
                         %for source in lproject['sources']:
-                          <li><a href="/${lproject['name']}?source=${source}">${source}</a></li>
+                          <li><a href="/dogdriver/${lproject['name']}?source=${source}">${source}</a></li>
                         %endfor
                         </ul>
                       </li>
