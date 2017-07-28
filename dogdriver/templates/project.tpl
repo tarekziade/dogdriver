@@ -77,7 +77,7 @@ Chart.controllers.derivedLine = custom;
 
 function drawChart(project, metric, target) {
 var jsonData = $.ajax({
-    url: 'http://localhost:8080/runs/' + project + '/' + metric +
+    url: '/dogdriver/runs/' + project + '/' + metric +
 '?source=${source}',
     dataType: 'json',
   }).done(function (results) {
