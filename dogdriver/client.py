@@ -78,6 +78,7 @@ def run_test(args):
         # run the molotov test
         args = ['moloslave', test_url, molotov_test_name]
         old = list(sys.argv)
+        print("Running %r" % ' '.join(args))
         sys.argv = args
         try:
             moloslave()

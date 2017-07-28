@@ -1,10 +1,25 @@
 import os
+from collections import defaultdict
+
 from bottle import route, run, get, request
 import bottle
 from bottle import mako_view as view
 
 from dogdriver.db import get_list, download_json
 from dogdriver.util import trend
+
+
+def get_best_source(project):
+    sources = defaultdict(int)
+    for filename in get_list(project + '-'):
+        data = download_json(filename)
+        source = data.get('source')
+        if source is None:
+            continue
+        sources[source] += 1
+    occs = [(occ, source) for source, occ in sources.items()]
+    occs.sort()
+    return occs[-1][1]
 
 
 def get_sources(project):
@@ -31,6 +46,10 @@ def get_project_list():
         entry = {'name': project, 'sources': get_sources(project)}
         projects.append(entry)
 
+    def _key(p):
+        return p['name'].lower().strip()
+
+    projects.sort(key=_key)
     return projects
 
 
@@ -38,11 +57,18 @@ HERE = os.path.dirname(__file__)
 bottle.TEMPLATE_PATH.append(os.path.join(HERE, 'templates'))
 
 
+def _get_source(project):
+    source = request.query.get('source')
+    if source in (None, 'None'):
+        source = get_best_source(project)
+    return source
+
+
 @route('/')
 @route('/dogdriver')
 @view('index')
 def index():
-    source = request.query.get('source', 'tarek')
+    source = _get_source('kintowe')
     return {'source': source, 'project': 'kintowe',
             'projects': get_project_list()}
 
@@ -51,10 +77,9 @@ def index():
 @route('/dogdriver/<project>')
 @view('project')
 def project_index(project):
-    source = request.query.get('source', 'tarek')
+    source = _get_source(project)
     return {'source': source, 'project': project,
             'projects': get_project_list()}
-
 
 
 @get('/trend/<project>')
@@ -62,8 +87,7 @@ def project_index(project):
 def get_trend(project):
     # trend is only on RPS for now
     metric = 'RPS'
-    previous = None
-    bysource = request.query.get('source')
+    bysource = _get_source(project)
     values = []
 
     for filename in get_list(project + '-'):
@@ -93,7 +117,7 @@ def get_trend(project):
 def get_runs(project, metric):
     chart = []
     previous = None
-    bysource = request.query.get('source')
+    bysource = _get_source(project)
     values = []
 
     for filename in get_list(project + '-'):

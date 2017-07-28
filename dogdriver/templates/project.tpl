@@ -5,6 +5,8 @@
 src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
 
 
+<h3>Source: ${source}</h3>
+ 
 <div class="column-group gutters">
   <div class="all-33 small-100 tiny-100">
     <h3>CPU Load (%) <span id="cpuTrend">==</span></h3>
