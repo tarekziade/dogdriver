@@ -9,7 +9,7 @@
   </div>
   <script>
     var jsonData = $.ajax({
-      url: '/dogdriver/trend/${project['name']}?source=${source}',
+      url: '/dogdriver/api/trend/${project['name']}?source=${source}',
     dataType: 'json',
   }).done(function (results) {
     var id = "${project['name']}Trend";

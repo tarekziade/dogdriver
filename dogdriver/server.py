@@ -19,6 +19,8 @@ def get_best_source(project):
         sources[source] += 1
     occs = [(occ, source) for source, occ in sources.items()]
     occs.sort()
+    if len(occs) == 0:
+        return None
     return occs[-1][1]
 
 
@@ -84,8 +86,18 @@ def project_index(project):
             'projects': get_project_list()}
 
 
-@get('/trend/<project>')
-@get('/dogdriver/trend/<project>')
+@get('/api/projects')
+@get('/dogdriver/api/projects')
+def get_projects():
+    def add_best_source(p):
+        p['best_source'] = get_best_source(p['name'])
+        return p
+
+    return {'projects': [add_best_source(p) for p in get_project_list()]}
+
+
+@get('/api/trend/<project>')
+@get('/dogdriver/api/trend/<project>')
 def get_trend(project):
     # trend is only on RPS for now
     metric = 'RPS'
@@ -114,8 +126,8 @@ def get_trend(project):
     return {'trend': _trend}
 
 
-@get('/runs/<project>/<metric>')
-@get('/dogdriver/runs/<project>/<metric>')
+@get('/api/runs/<project>/<metric>')
+@get('/dogdriver/api/runs/<project>/<metric>')
 def get_runs(project, metric):
     chart = []
     previous = None
