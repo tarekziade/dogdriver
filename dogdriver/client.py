@@ -1,6 +1,8 @@
 import time
 import sys
 from uuid import uuid4
+import socket
+import asyncio
 
 import requests
 from molotov.slave import main as moloslave
@@ -59,11 +61,46 @@ def get_test_info(project, deployment, test_name):
 
 
 def run_test(args):
-    project = args.project
-    source = args.source
-    deployment = args.deployment
-    test_name = args.test
-    molotov_test_name = args.molotov_test
+    auto = args.auto
+    if auto is not None:
+        projects = requests.get(auto).json()['projects']
+        for project in projects:
+            print("******* Running molotov on %r" % project['name'])
+            # XXXX
+            deployment = 'stage'
+            test_name = molotov_test = 'dogdriver'
+            if args.source is None:
+                source = project['best_source']
+            else:
+                source = args.source
+
+            try:
+                run_single(project['name'], source,
+                           deployment, test_name, molotov_test)
+                print("******* SUCCESS!")
+            except Exception as e:
+                print(e)
+                print("******* FAILED!")
+    else:
+        project = args.project
+        source = args.source
+        if source is None:
+            source = socket.gethostname()
+        deployment = args.deployment
+        test_name = args.test
+        molotov_test_name = args.molotov_test
+        run_single(project, source, deployment, test_name, molotov_test_name)
+
+
+def _init_molotov():
+    from molotov.api import _SCENARIO, _FIXTURES
+    _SCENARIO.clear()
+    _FIXTURES.clear()
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
+
+def run_single(project, source, deployment, test_name, molotov_test_name):
+    _init_molotov()
 
     # grab the test url
     test_url, deployment_url = get_test_info(project, deployment, test_name)
