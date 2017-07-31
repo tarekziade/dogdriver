@@ -12,7 +12,8 @@
       url: '/dogdriver/trend/${project['name']}?source=${source}',
     dataType: 'json',
   }).done(function (results) {
-    $('#${project['name']}Trend').html(results["trend"]);
+    var id = "${project['name']}Trend";
+    $("[id='" + id + "']").html(results["trend"]);
    });
 
   </script>
